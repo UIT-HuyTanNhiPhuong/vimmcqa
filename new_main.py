@@ -39,7 +39,7 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 
 # Evaluation Loop
-for index in range(args.start_index, len(data)):
+for index in tqdm(range(args.start_index, len(data))):
     input_text, result = data[index]['Prompt'], data[index]['Result']
     input_ids = tokenizer(input_text, return_tensors="pt").to(device)
 
