@@ -70,8 +70,7 @@ for index in range(args.start_index, len(data)):
     del res
     torch.cuda.empty_cache()
 
-    if args.test_first and index == args.test_index:
-        break
+    if index == len(data) -1: break # Ignore Key Error
 
 # Save any remaining results
 if save_results:
