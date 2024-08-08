@@ -31,7 +31,7 @@ save_results = []
 
 
 # Load Model
-quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+quantization_config = BitsAndBytesConfig(load_in_4bit=True)
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 model = AutoModelForCausalLM.from_pretrained(
     args.model_name,
