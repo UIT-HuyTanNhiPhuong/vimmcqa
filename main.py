@@ -32,7 +32,7 @@ save_results = []
 
 
 # Load Model
-quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+quantization_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16)
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 model = AutoModelForCausalLM.from_pretrained(
     args.model_name,
