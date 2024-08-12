@@ -45,7 +45,7 @@ for index, item in enumerate(tqdm(data)):
     #     break
 
     input_text, result = item['Prompt'], item['Result']
-    input_ids = tokenizer(input_text, return_tensors="pt").to(device)
+    input_ids = tokenizer(input_text, return_tensors="pt", truncation = True, max_length = args.max_length).to(device)
 
     with torch.no_grad(), autocast():
         outputs = model.generate(**input_ids, max_new_tokens=15)
