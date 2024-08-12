@@ -13,6 +13,7 @@ parser.add_argument('--hf_token', type=str)
 parser.add_argument('--csv_file', type=str, default = 'finalData.csv')
 parser.add_argument('--prompt_mode', type=str, default = 'zero_shot')
 parser.add_argument('--model_name', type=str)
+parser.add_argument('--max_length', type=int, default = 2000)
 parser.add_argument('--test_first', type=bool, default = False)
 parser.add_argument('--test_index', type=int, default = 5)
 
@@ -44,7 +45,7 @@ for index, item in enumerate(tqdm(data)):
     #     break
 
     input_text, result = item['Prompt'], item['Result']
-    input_ids = tokenizer(input_text, return_tensors="pt").to(device)
+    input_ids = tokenizer(input_text, return_tensors="pt", truncation = True, max_length = args.max_length).to(device)
 
     with torch.no_grad(), autocast():
         outputs = model.generate(**input_ids, max_new_tokens=15)
