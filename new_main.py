@@ -15,6 +15,7 @@ parser.add_argument('--csv_file', type=str, default='finalData.csv')
 parser.add_argument('--prompt_mode', type=str, default='zero_shot', 
                     help="'zero_shot': 0; 'one_shot': 1; 'two_shot': 2; 'three_shot': 3; 'few_shot': min(3, len(data) - 1)")
 parser.add_argument('--model_name', type=str)
+parser.add_argument('--max_length', type=int, default = 2000)
 parser.add_argument('--test_first', type=bool, default=False)
 parser.add_argument('--test_index', type=int, default=5)
 parser.add_argument('--output_file', type=str, default='results.json')
@@ -42,7 +43,7 @@ model = AutoModelForCausalLM.from_pretrained(
 # Evaluation Loop
 for index in tqdm(range(args.start_index, len(data))):
     input_text, result = data[index]['Prompt'], data[index]['Result']
-    input_ids = tokenizer(input_text, return_tensors="pt").to(device)
+    input_ids = tokenizer(input_text, return_tensors="pt", truncation = True, max_length = args.max_length).to(device)
 
     with torch.no_grad(), autocast():
         outputs = model.generate(**input_ids, max_new_tokens=15)
