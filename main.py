@@ -54,6 +54,8 @@ for index, item in enumerate(tqdm(data)):
         raw_output = tokenizer.decode(outputs[0][1:])
 
         print('====================================')
+        print(f'output: \n {outputs}')
+        print('====================================')
         print(f'raw_output: \n {raw_output}')
 
         processed_output = handle_output(raw_output, input_text)
