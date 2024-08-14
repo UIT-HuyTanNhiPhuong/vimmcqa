@@ -44,13 +44,14 @@ class Prompting_Dataset(Dataset):
 
     def create_prompt(self, sample):
         
+        # Define the role description as a single string
         role_description = (
             "Role: Bạn là một chuyên gia y tế hàng đầu.\n"
             "Bạn có khả năng phân tích và trả lời các câu hỏi trắc nghiệm y sinh một cách chính xác, rõ ràng và dễ hiểu.\n"
-            "Nhiệm vụ của bạn là sử dụng kiến thức y khoa sâu rộng để đọc hiểu, phân tích và trả lời các câu hỏi y khoa một cách chính xác. \n"
-            "Vui lòng xem xét kỹ lưỡng từng câu hỏi cùng với các lựa chọn A, B, C, D và sử dụng nguồn kiến thức y khoa phong phú của bạn để đưa ra câu trả lời đúng cho mỗi câu hỏi. \n"
-            "Mỗi câu hỏi có thể có từ 1 đến 4 đáp án đúng; không có câu nào không có đáp án đúng. \n"
-            "Hãy trả lời chính xác và đầy đủ, định dạng đầu ra của bạn phải là danh sách gồm các chữ cái đại diện cho đáp án đúng, ví dụ: "['A', 'B', 'C', 'D']", "['A', 'B', 'C']", "['A', 'B']", "['A', 'D']", "['A']". \n"
+            "Nhiệm vụ của bạn là sử dụng kiến thức y khoa sâu rộng để đọc hiểu, phân tích và trả lời các câu hỏi y khoa một cách chính xác.\n"
+            "Vui lòng xem xét kỹ lưỡng từng câu hỏi cùng với các lựa chọn A, B, C, D và sử dụng nguồn kiến thức y khoa phong phú của bạn để đưa ra câu trả lời đúng cho mỗi câu hỏi.\n"
+            "Mỗi câu hỏi có thể có từ 1 đến 4 đáp án đúng; không có câu nào không có đáp án đúng.\n"
+            "Hãy trả lời chính xác và đầy đủ, định dạng đầu ra của bạn phải là danh sách gồm các chữ cái đại diện cho đáp án đúng, ví dụ: ['A', 'B', 'C', 'D'], ['A', 'B', 'C'], ['A', 'B'], ['A', 'D'], ['A'].\n"
             "Nếu bạn trả lời chính xác và đầy đủ, bạn sẽ được thưởng 200$.\n\n"
         )
 
