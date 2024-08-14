@@ -11,11 +11,13 @@ parser = argparse.ArgumentParser()
 # Add argumentss
 parser.add_argument('--hf_token', type=str)
 parser.add_argument('--csv_file', type=str, default = 'finalData.csv')
-parser.add_argument('--prompt_mode', type=str, default = 'zero_shot')
+parser.add_argument('--prompt_mode', type=str, default='zero_shot', 
+                    help="'zero_shot': 0; 'one_shot': 1; 'two_shot': 2; 'three_shot': 3; 'few_shot': min(3, len(data) - 1)")
 parser.add_argument('--model_name', type=str)
 parser.add_argument('--max_length', type=int, default = 2000)
 parser.add_argument('--test_first', type=bool, default = False)
 parser.add_argument('--test_index', type=int, default = 5)
+parser.add_argument('--output_file', type=str, default='results.json')
 
 args = parser.parse_args()
 
@@ -55,7 +57,6 @@ for index, item in enumerate(tqdm(data)):
     print('====================================')
     print(f'Ground_truth : {result}')
     print(f'Prediction : {processed_output}')
-
     
     res = {
         'index' : index,
@@ -75,7 +76,7 @@ for index, item in enumerate(tqdm(data)):
     
     if index == len(data) -1: break # Ignore Key Error
 
-with open('results.json', 'w') as json_file:
+with open(args.output_file, 'w') as json_file:
     json.dump(save_results, json_file, indent=4)
 
-print("JSON files with prediction and ground truth data saved as results.json")
+print(f"JSON files with prediction and ground truth data saved as {args.output_file}")
