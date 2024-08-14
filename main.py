@@ -52,12 +52,7 @@ for index, item in enumerate(tqdm(data)):
     with torch.no_grad(), autocast():
         outputs = model.generate(**input_ids, max_new_tokens=15)
         raw_output = tokenizer.decode(outputs[0][1:])
-
-        print('====================================')
-        print(f'output: \n {outputs}')
-        print('====================================')
-        print(f'raw_output: \n {raw_output}')
-
+        
         processed_output = handle_output(raw_output, input_text)
         print('====================================')
         print(f'Ground_truth : {result}')
