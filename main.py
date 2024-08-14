@@ -53,10 +53,13 @@ for index, item in enumerate(tqdm(data)):
         outputs = model.generate(**input_ids, max_new_tokens=15)
         raw_output = tokenizer.decode(outputs[0][1:])
 
-    processed_output = handle_output(raw_output, input_text)
-    print('====================================')
-    print(f'Ground_truth : {result}')
-    print(f'Prediction : {processed_output}')
+        print('====================================')
+        print(f'raw_output: \n' {raw_output})
+
+        processed_output = handle_output(raw_output, input_text)
+        print('====================================')
+        print(f'Ground_truth : {result}')
+        print(f'Prediction : {processed_output}')
     
     res = {
         'index' : index,
