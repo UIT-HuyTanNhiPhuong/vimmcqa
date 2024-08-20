@@ -89,6 +89,10 @@ def load_json_files(directory_pattern):
 
     return all_data
 
+def simplify_output(output):
+    import re
+    return [', '.join(re.findall(r'[A-D]', line)) for line in output]
+
 def main():
     # Determine JSON files to read
     if fnmatch.fnmatch(args.json_directory, "*result*.json"):
@@ -103,7 +107,7 @@ def main():
         data['label'].append(item['label'].replace('</s', '').strip())
 
     # Calculate scores
-    gt, pred = data['label'], data['outputs']
+    gt, pred = simplify_output(data['label']), simplify_output(data['outputs'])
     scores = calculate_scores(gt, pred)
 
     # Save scores to file
