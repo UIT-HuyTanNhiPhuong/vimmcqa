@@ -86,16 +86,16 @@ class Prompting_Dataset(Dataset):
 # from torch.utils.data import Dataset
 # import pandas as pd
 
-# def handle_output(raw_output, prompt):
-#   start_index = raw_output.find(prompt)
+def handle_output(raw_output, prompt):
+  start_index = raw_output.find(prompt)
 
-#   generated_part = raw_output[start_index + len(prompt):]
+  generated_part = raw_output[start_index + len(prompt):]
 
-#   start_index = generated_part.find('[')
-#   end_index = generated_part.find('\n\n')
-#   prediction = generated_part[start_index:end_index].strip()
+  start_index = generated_part.find('[')
+  end_index = generated_part.find('\n\n')
+  prediction = generated_part[start_index:end_index].strip()
 
-#   return prediction
+  return prediction
 
 
 # class Prompting_Dataset(Dataset):
