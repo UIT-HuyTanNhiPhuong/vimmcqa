@@ -1,29 +1,20 @@
-
 import torch
-from torch import nn
 from torch.utils.data import Dataset
 import pandas as pd
 
-def handle_output(raw_output, prompt):
-  start_index = raw_output.find(prompt)
-
-  generated_part = raw_output[start_index + len(prompt):]
-
-  start_index = generated_part.find('[')
-  end_index = generated_part.find('\n\n')
-  prediction = generated_part[start_index:end_index].strip()
-
-  return prediction
-
-
 class Prompting_Dataset(Dataset):
-    def __init__(self, csv_file, prompt_mode='few_shot'):
-        self.csv_file = csv_file
+    def __init__(self, main_csv_file, shot_csv_file=None, prompt_mode='few_shot'):
+        self.main_csv_file = main_csv_file
+        self.shot_csv_file = shot_csv_file  # CSV file for few-shot examples
         self.prompt_mode = prompt_mode
-        self.load_csv_file()
+        self.load_csv_files()
 
-    def load_csv_file(self):
-        self.data = pd.read_csv(self.csv_file)
+    def load_csv_files(self):
+        self.main_data = pd.read_csv(self.main_csv_file)
+        if self.shot_csv_file:
+            self.shot_data = pd.read_csv(self.shot_csv_file)
+        else:
+            self.shot_data = self.main_data  # If no shot file, use the main file
 
     def add_prompt(self, sample, include_answer=False):
         prompt = 'Hãy chọn options đúng\n'
@@ -43,7 +34,6 @@ class Prompting_Dataset(Dataset):
         return prompt
 
     def create_prompt(self, sample):
-        
         # Define the role description as a single string
         role_description = (
             "Role: Bạn là một chuyên gia y tế hàng đầu.\n"
@@ -60,7 +50,7 @@ class Prompting_Dataset(Dataset):
             'one_shot': 1,
             'two_shot': 2,
             'three_shot': 3,
-            'few_shot': min(3, len(self.data) - 1)  # Fallback for few_shot
+            'few_shot': min(3, len(self.shot_data) - 1)  # Fallback for few_shot
         }
 
         # Get the number of examples to include
@@ -70,7 +60,7 @@ class Prompting_Dataset(Dataset):
         res = role_description
 
         for i in range(shot_count):
-            sample_example = self.data.iloc[i]
+            sample_example = self.shot_data.iloc[i]
             res += self.add_prompt(sample=sample_example, include_answer=True)
 
         # Add the main sample without an answer
@@ -78,15 +68,107 @@ class Prompting_Dataset(Dataset):
         return res
 
     def __len__(self):
-        return len(self.data)
+        return len(self.main_data)
 
     def __getitem__(self, idx):
-        sample = self.data.loc[idx]
+        sample = self.main_data.loc[idx]
         prompt = self.create_prompt(sample)
-        result = self.data.loc[idx]['result']
+        result = self.main_data.loc[idx]['result']
 
         return {
             'Prompt': prompt,
             'Result': result,
         }
+
+
+# import torch
+# from torch import nn
+# from torch.utils.data import Dataset
+# import pandas as pd
+
+# def handle_output(raw_output, prompt):
+#   start_index = raw_output.find(prompt)
+
+#   generated_part = raw_output[start_index + len(prompt):]
+
+#   start_index = generated_part.find('[')
+#   end_index = generated_part.find('\n\n')
+#   prediction = generated_part[start_index:end_index].strip()
+
+#   return prediction
+
+
+# class Prompting_Dataset(Dataset):
+#     def __init__(self, csv_file, prompt_mode='few_shot'):
+#         self.csv_file = csv_file
+#         self.prompt_mode = prompt_mode
+#         self.load_csv_file()
+
+#     def load_csv_file(self):
+#         self.data = pd.read_csv(self.csv_file)
+
+#     def add_prompt(self, sample, include_answer=False):
+#         prompt = 'Hãy chọn options đúng\n'
+#         context = sample['context']
+#         question = sample['question']
+#         prompt += f'Context : {context}\nQuestion : {question}\nChoices:\n'
+#         choices = ['A', 'B', 'C', 'D']
+#         text = [sample[each] for each in choices]
+
+#         for choice, txt in zip(choices, text):
+#             prompt += f"{choice}. {txt}\n"
+
+#         if include_answer:
+#             answer = "".join(sample['result'])
+#             prompt += f'Answer: {answer}\n\n'
+
+#         return prompt
+
+#     def create_prompt(self, sample):
+        
+#         # Define the role description as a single string
+#         role_description = (
+#             "Role: Bạn là một chuyên gia y tế hàng đầu.\n"
+#             "Bạn có khả năng phân tích và trả lời các câu hỏi trắc nghiệm y sinh một cách chính xác, rõ ràng và dễ hiểu.\n"
+#             "Nhiệm vụ của bạn là sử dụng kiến thức y khoa sâu rộng để đọc hiểu, phân tích và trả lời các câu hỏi y khoa một cách chính xác.\n"
+#             "Vui lòng xem xét kỹ lưỡng từng câu hỏi cùng với các lựa chọn A, B, C, D và sử dụng nguồn kiến thức y khoa phong phú của bạn để đưa ra câu trả lời đúng cho mỗi câu hỏi.\n"
+#             "Mỗi câu hỏi có thể có từ 1 đến 4 đáp án đúng; không có câu nào không có đáp án đúng.\n"
+#             "Hãy trả lời chính xác và đầy đủ, định dạng đầu ra của bạn phải là danh sách gồm các chữ cái đại diện cho đáp án đúng, ví dụ: ['A', 'B', 'C', 'D'], ['A', 'B', 'C'], ['A', 'B'], ['A', 'D'], ['A'].\n"
+#             "Nếu bạn trả lời chính xác và đầy đủ, bạn sẽ được thưởng 200$.\n\n"
+#         )
+
+#         num_shots = {
+#             'zero_shot': 0,
+#             'one_shot': 1,
+#             'two_shot': 2,
+#             'three_shot': 3,
+#             'few_shot': min(3, len(self.data) - 1)  # Fallback for few_shot
+#         }
+
+#         # Get the number of examples to include
+#         shot_count = num_shots.get(self.prompt_mode, 0)
+
+#         # Build the prompt
+#         res = role_description
+
+#         for i in range(shot_count):
+#             sample_example = self.data.iloc[i]
+#             res += self.add_prompt(sample=sample_example, include_answer=True)
+
+#         # Add the main sample without an answer
+#         res += self.add_prompt(sample=sample, include_answer=False)
+#         return res
+
+#     def __len__(self):
+#         return len(self.data)
+
+#     def __getitem__(self, idx):
+#         sample = self.data.loc[idx]
+#         prompt = self.create_prompt(sample)
+#         result = self.data.loc[idx]['result']
+
+#         return {
+#             'Prompt': prompt,
+#             'Result': result,
+#         }
 

@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 # Add argumentss
 parser.add_argument('--hf_token', type=str)
 parser.add_argument('--csv_file', type=str, default = 'finalData.csv')
+parser.add_argument('--shot_csv', type=str, default = 'finalData.csv')
 parser.add_argument('--prompt_mode', type=str, default='zero_shot', 
                     help="'zero_shot': 0; 'one_shot': 1; 'two_shot': 2; 'three_shot': 3; 'few_shot': min(3, len(data) - 1)")
 parser.add_argument('--model_name', type=str)
@@ -25,7 +26,8 @@ import os
 os.environ["HF_TOKEN"] = args.hf_token
 
 # Dataset Loading
-data = Prompting_Dataset(args.csv_file, args.prompt_mode)
+data = Prompting_Dataset(main_csv_file=args.csv_file, shot_csv_file=args.shot_csv, prompt_mode=args.prompt_mode)
+# data = Prompting_Dataset(args.csv_file, args.prompt_mode)
 
 # Evaluation Loop
 exact_match = 0
