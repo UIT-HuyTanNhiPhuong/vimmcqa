@@ -99,8 +99,8 @@ def main():
     # Extract 'output' and 'label'
     data = {'outputs': [], 'label': []}
     for item in all_data:
-        data['outputs'].append(item['output'].replace('</s', '').strip())
-        data['label'].append(item['label'].replace('</s', '').strip())
+        data['outputs'].append(item['output'].replace('</s', '').replace(" '", "'").strip())
+        data['label'].append(item['label'].replace('</s', '').replace(" '", "'").strip())
 
     # Calculate scores
     gt, pred = data['label'], data['outputs']
