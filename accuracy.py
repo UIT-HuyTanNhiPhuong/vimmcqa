@@ -42,8 +42,8 @@ def calculate_f1(gt, pred):
     tp = fp = fn = em = 0
 
     for g, p in zip(gt, pred):
-        gt_set = set(g.split(", "))
-        pred_set = set(p.split(", "))
+        gt_set = set([i.replace(' ','') for i in g.split(", ")])
+        pred_set = set([i.replace(' ','') for i in p.split(", ")])
 
         em += int(gt_set == pred_set)
         tp += len(gt_set & pred_set)
@@ -99,8 +99,8 @@ def main():
     # Extract 'output' and 'label'
     data = {'outputs': [], 'label': []}
     for item in all_data:
-        data['outputs'].append(item['output'].replace('</s', '').replace(" '", "'").strip())
-        data['label'].append(item['label'].replace('</s', '').replace(" '", "'").strip())
+        data['outputs'].append(item['output'].replace('</s', '').strip())
+        data['label'].append(item['label'].replace('</s', '').strip())
 
     # Calculate scores
     gt, pred = data['label'], data['outputs']
